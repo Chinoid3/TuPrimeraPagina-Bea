@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Autor{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5>¿Estás seguro de que quieres eliminar este autor?</h5>
+                    <p><strong>Esta acción no se puede deshacer.</strong></p>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ autor.nombre }} {{ autor.apellido }}</h5>
+                        <p class="card-text">
+                            <strong>Nacionalidad:</strong> {{ autor.nacionalidad }}<br>
+                            <strong>Fecha de Nacimiento:</strong> {{ autor.fecha_nacimiento }}<br>
+                            <strong>Libros publicados:</strong> {{ autor.libros.count }}
+                        </p>
+                        {% if autor.biografia %}
+                            <p class="card-text"><small class="text-muted">{{ autor.biografia|truncatewords:30 }}</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if autor.libros.exists %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Nota:</strong> Este autor tiene {{ autor.libros.count }} libro(s) asociado(s). 
+                        Debes eliminar todos los libros del autor antes de poder eliminarlo.
+                    </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'autor_list' %}" class="btn btn-secondary me-md-2">Cancelar</a>
+                        <button type="submit" class="btn btn-danger" {% if autor.libros.exists %}disabled{% endif %}>
+                            <i class="fas fa-trash"></i> Eliminar Autor
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

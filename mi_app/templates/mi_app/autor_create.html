@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Agregar Autor{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Agregar Nuevo Autor</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" id="autorForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+                            {{ form.nombre }}
+                            {% if form.nombre.errors %}
+                                <div class="text-danger">{{ form.nombre.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.apellido.id_for_label }}" class="form-label">Apellido</label>
+                            {{ form.apellido }}
+                            {% if form.apellido.errors %}
+                                <div class="text-danger">{{ form.apellido.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nacionalidad.id_for_label }}" class="form-label">Nacionalidad</label>
+                            {{ form.nacionalidad }}
+                            {% if form.nacionalidad.errors %}
+                                <div class="text-danger">{{ form.nacionalidad.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.fecha_nacimiento.id_for_label }}" class="form-label">Fecha de Nacimiento</label>
+                            {{ form.fecha_nacimiento }}
+                            {% if form.fecha_nacimiento.errors %}
+                                <div class="text-danger">{{ form.fecha_nacimiento.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.biografia.id_for_label }}" class="form-label">Biografía</label>
+                        {{ form.biografia }}
+                        {% if form.biografia.errors %}
+                            <div class="text-danger">{{ form.biografia.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'autor_list' %}" class="btn btn-secondary me-md-2" onclick="clearFormData()">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Guardar Autor</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Guardar datos del formulario en localStorage
+function saveFormData() {
+    const form = document.getElementById('autorForm');
+    const formData = new FormData(form);
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    localStorage.setItem('autorFormData', JSON.stringify(data));
+}
+
+// Cargar datos del formulario desde localStorage
+function loadFormData() {
+    const savedData = localStorage.getItem('autorFormData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        const form = document.getElementById('autorForm');
+        
+        for (let key in data) {
+            const field = form.querySelector(`[name="${key}"]`);
+            if (field) {
+                field.value = data[key];
+            }
+        }
+    }
+}
+
+// Limpiar datos del formulario
+function clearFormData() {
+    localStorage.removeItem('autorFormData');
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    loadFormData();
+    
+    // Guardar datos cuando cambie cualquier campo
+    const form = document.getElementById('autorForm');
+    form.addEventListener('input', saveFormData);
+    
+    // Limpiar datos cuando se envíe el formulario exitosamente
+    form.addEventListener('submit', function() {
+        if (form.checkValidity()) {
+            clearFormData();
+        }
+    });
+});
+
+// Advertencia antes de salir si hay datos sin guardar
+window.addEventListener('beforeunload', function(e) {
+    const savedData = localStorage.getItem('autorFormData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        const hasData = Object.values(data).some(value => value.trim() !== '');
+        
+        if (hasData) {
+            e.preventDefault();
+            e.returnValue = 'Tienes datos sin guardar. ¿Estás seguro de que quieres salir?';
+        }
+    }
+});
+</script>
+{% endblock %}

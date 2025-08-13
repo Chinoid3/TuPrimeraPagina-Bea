@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Libro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5>¿Estás seguro de que quieres eliminar este libro?</h5>
+                    <p><strong>Esta acción no se puede deshacer.</strong></p>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ libro.titulo }}</h5>
+                        <p class="card-text">
+                            <strong>Autor:</strong> {{ libro.autor }}<br>
+                            <strong>Género:</strong> {{ libro.get_genero_display }}<br>
+                            <strong>ISBN:</strong> {{ libro.isbn }}<br>
+                            <strong>Precio:</strong> ${{ libro.precio }}
+                        </p>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'libro_list' %}" class="btn btn-secondary me-md-2">Cancelar</a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Eliminar Libro
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

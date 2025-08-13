@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Libros{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Lista de Libros</h2>
+    <a href="{% url 'libro_create' %}" class="btn btn-primary">Agregar Libro</a>
+</div>
+
+<!-- Barra de búsqueda -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form method="GET" action="{% url 'libro_list' %}">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Buscar por título, autor o género..." value="{{ query }}">
+                <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if libros %}
+    <div class="row">
+        {% for libro in libros %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ libro.titulo }}</h5>
+                    <p class="card-text">
+                        <strong>Autor:</strong> {{ libro.autor }}<br>
+                        <strong>Género:</strong> {{ libro.get_genero_display }}<br>
+                        <strong>Fecha:</strong> {{ libro.fecha_publicacion }}<br>
+                        <strong>Precio:</strong> ${{ libro.precio }}
+                    </p>
+                    <p class="card-text"><small class="text-muted">{{ libro.sinopsis|truncatewords:20 }}</small></p>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-end">
+                        <a href="{% url 'libro_delete' libro.id %}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        {% if query %}
+            No se encontraron libros que coincidan con "{{ query }}".
+        {% else %}
+            No hay libros registrados aún.
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}
