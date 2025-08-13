@@ -134,7 +134,7 @@ TuPrimeraPagina-Bea/
 - `autor`: Relación con el modelo Autor
 - `genero`: Género literario
 - `fecha_publicacion`: Fecha de publicación
-- `isbn`: Número ISBN único
+- `isbn`: Número ISBN único (Número identificador de un libro)
 - `precio`: Precio del libro
 - `sinopsis`: Sinopsis del libro
 
